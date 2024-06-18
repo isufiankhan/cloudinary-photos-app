@@ -1,15 +1,11 @@
 import CloudinaryImage from "@/components/CloudinaryImage";
-import UploadButton from "@/components/UploadButton"
 import cloudinary from "cloudinary";
+import { SearchResults } from "../gallery/page";
+import ForceRefresh from "@/components/ForceRefresh";
 
-export type SearchResults = {
-    public_id: string;
-    tags: string[];
-};
-
-const page = async () => {
+const FavoritesPage = async () => {
     const results = await cloudinary.v2.search
-        .expression('resource_type:image')
+        .expression('resource_type:image AND tags=favorite')
         .sort_by('created_at', 'desc')
         .with_field("tags")
         .max_results(30)
@@ -19,15 +15,15 @@ const page = async () => {
 
     return (
         <div>
+            <ForceRefresh />
             <div className="flex flex-col gap-8">
                 <div className="flex justify-between">
-                <h1 className="text-4xl font-bold">Gallery</h1>
-                <UploadButton />
+                <h1 className="text-4xl font-bold">Favorites</h1>
                 </div>
                 <div className="grid grid-cols-4 gap-4">
                     {results.resources.map((result) => (
                         <CloudinaryImage
-                        path="/gallery"
+                        path="/favorites"
                         key={result.public_id}
                         imageData={result}
                         alt="an image of something"
@@ -42,4 +38,4 @@ const page = async () => {
     )
 }
 
-export default page
+export default FavoritesPage
