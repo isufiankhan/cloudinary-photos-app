@@ -1,26 +1,38 @@
-'use client'
+import CloudinaryImage from "@/components/CloudinaryImage";
+import UploadButton from "@/components/UploadButton"
+import cloudinary from "cloudinary";
+import { CldImage } from "next-cloudinary";
 
-import { Button } from "@/components/ui/button"
-import { CldUploadButton } from "next-cloudinary"
+type SearchResults = {
+    public_id: string
+}
 
-const page = () => {
+const page = async () => {
+    const results = await cloudinary.v2.search
+        .expression('resource_type:image')
+        .sort_by('created_at', 'desc')
+        .max_results(10)
+        .execute() as {resources: SearchResults[]};
+
     return (
         <div>
-            <div className="flex justify-between">
+            <div className="flex flex-col gap-8">
+                <div className="flex justify-between">
                 <h1 className="text-4xl font-bold">Gallery</h1>
-                <Button asChild>
-                    <div className="flex gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
-                    </svg>
-                    <CldUploadButton
-                        onUpload={(result: any) => {
-                            // setImageId(result.info.public_id)
-                        }}
-                        uploadPreset="equutn9r"
-                    />
-                    </div>
-                </Button>
+                <UploadButton />
+                </div>
+                <div className="grid grid-cols-4 gap-4">
+                    {results.resources.map((result) => (
+                        <CloudinaryImage
+                        key={result.public_id}
+                        src={result.public_id}
+                        alt="an image of something"
+                        width="400"
+                        height="300"
+                        />
+                    )
+                    )}
+                </div>
             </div>
         </div>
     )
