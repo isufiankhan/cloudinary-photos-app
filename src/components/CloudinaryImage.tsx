@@ -1,18 +1,27 @@
 'use client';
 
-import { CldImage } from "next-cloudinary";
+import { CldImage, CldImageProps } from "next-cloudinary";
 import Heart from "./icons/Heart";
 import { setAsFavouriteAction } from "../app/gallery/actions";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { SearchResults } from "@/app/gallery/page";
 import FullHeart from "./icons/FullHeart";
+import { ImageMenu } from "./ImageMenu";
 
-const CloudinaryImage = (props:any & {imageData: SearchResults; path: string}) => {
+const CloudinaryImage = (
+    props:
+    {
+        imageData: SearchResults;
+        onUnheart?: (unheartedResource: SearchResults) => void
+    } & Omit<CldImageProps, "src">
+) => {
     const [transition, startTransition] = useTransition();
 
-    const {imageData} = props;
+    const { imageData, onUnheart } = props;
 
-    const isFavorite = imageData.tags.includes("favorite");
+    const [isFavorited, setIsFavorited] = useState(
+        imageData.tags.includes("favorite")
+    );
 
     return (
         <div className="relative">
@@ -20,24 +29,28 @@ const CloudinaryImage = (props:any & {imageData: SearchResults; path: string}) =
                 {...props}
                 src={imageData.public_id}
             />
-            {isFavorite ?
-            <FullHeart
-            onClick={()=>{
-                startTransition(() => {
-                    setAsFavouriteAction(imageData.public_id, false, props.path)
-                });
-            }}
-            className="absolute top-2 right-2 hover:text-white text-red-600 cursor-pointer" 
-            />
-            :
-            <Heart
-            onClick={()=>{
-                startTransition(() => {
-                    setAsFavouriteAction(imageData.public_id, true, props.path)
-                });
-            }}
-            className="absolute top-2 right-2 hover:text-red-600 cursor-pointer" 
-            />}
+            {isFavorited ?
+                <FullHeart
+                    onClick={() => {
+                        onUnheart?.(imageData);
+                        setIsFavorited(false);
+                        startTransition(() => {
+                            setAsFavouriteAction(imageData.public_id, false)
+                        });
+                    }}
+                    className="absolute top-2 left-2 hover:text-white text-red-600 cursor-pointer"
+                />
+                :
+                <Heart
+                    onClick={() => {
+                        setIsFavorited(true);
+                        startTransition(() => {
+                            setAsFavouriteAction(imageData.public_id, true)
+                        });
+                    }}
+                    className="absolute top-2 left-2 hover:text-red-600 cursor-pointer"
+                />}
+                <ImageMenu />
         </div>
     )
 }

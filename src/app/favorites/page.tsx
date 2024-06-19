@@ -1,7 +1,7 @@
-import CloudinaryImage from "@/components/CloudinaryImage";
 import cloudinary from "cloudinary";
 import { SearchResults } from "../gallery/page";
 import ForceRefresh from "@/components/ForceRefresh";
+import FavoritesList from "./favorites-list";
 
 const FavoritesPage = async () => {
     const results = await cloudinary.v2.search
@@ -11,8 +11,6 @@ const FavoritesPage = async () => {
         .max_results(30)
         .execute() as {resources: SearchResults[]};
 
-        console.log(results)
-
     return (
         <div>
             <ForceRefresh />
@@ -20,19 +18,9 @@ const FavoritesPage = async () => {
                 <div className="flex justify-between">
                 <h1 className="text-4xl font-bold">Favorites</h1>
                 </div>
-                <div className="grid grid-cols-4 gap-4">
-                    {results.resources.map((result) => (
-                        <CloudinaryImage
-                        path="/favorites"
-                        key={result.public_id}
-                        imageData={result}
-                        alt="an image of something"
-                        width="400"
-                        height="300"
-                        />
-                    )
-                    )}
-                </div>
+                <FavoritesList 
+                initialResources={results.resources}
+                />
             </div>
         </div>
     )
