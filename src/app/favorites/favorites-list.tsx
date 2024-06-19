@@ -15,11 +15,11 @@ const FavoritesList = ({ initialResources }: { initialResources: SearchResults[]
     return (
         <ImageGrid
             images={resources}
-            getImage={(imageData: SearchResults) => {
+            getImage={(imagedata: SearchResults) => {
                 return (
                     <CloudinaryImage
-                        key={imageData.public_id}
-                        imageData={imageData}
+                        key={imagedata.public_id}
+                        imagedata={imagedata}
                         alt="an image of something"
                         width="400"
                         height="300"
