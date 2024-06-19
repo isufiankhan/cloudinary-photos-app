@@ -1,5 +1,5 @@
 import cloudinary from "cloudinary";
-import AlbumGrid from "./AlbumGrid";
+import AlbumGrid from "../../../components/AlbumGrid";
 import { SearchResults } from "@/app/gallery/page";
 import ForceRefresh from "@/components/ForceRefresh";
 
