@@ -5,6 +5,7 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
+import { FaSearch } from "react-icons/fa";
 
 const SearchForm = ({initialSearch} : {initialSearch: string}) => {
     const [tagName, setTagName] = useState(initialSearch ?? "");
@@ -30,7 +31,10 @@ const SearchForm = ({initialSearch} : {initialSearch: string}) => {
                     value={tagName}
                     placeholder="Search by tag..."
                 />
-                <Button type="submit">Search</Button>
+                <Button type="submit" className="flex gap-2">
+                    <FaSearch />
+                    Search
+                    </Button>
             </div>
         </form>
     )
