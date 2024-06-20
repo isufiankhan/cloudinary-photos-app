@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { CldImage } from "next-cloudinary";
 import { useState } from "react";
 
@@ -12,18 +13,31 @@ export default function EditPage({ searchParams: { publicId } }: {
     const [transformation, setTransformation] = useState<undefined | "generative-fill" | "blur" | "grayscale" | "pixelate" | "removebg"
     >();
 
+    const [pendingPrompt, setPendingPrompt] = useState("");
+    const [prompt, setPrompt] = useState("");
+
     return <div>
         <div className="flex flex-col gap-8">
             <div className="flex justify-between">
-                <h1 className="text-4xl font-bold">Edit {publicId}</h1>
+                <h1 className="text-4xl font-bold">Edit Image</h1>
             </div>
             <div className="flex gap-4">
                 <Button variant={"ghost"} onClick={() => setTransformation(undefined)}>
                     Clear All
                 </Button>
-                <Button onClick={() => setTransformation("generative-fill")}>
+                <div className="flex flex-col gap-2">
+                <Button onClick={() => {
+                    setTransformation("generative-fill")
+                    setPrompt(pendingPrompt)
+                    }}>
                     Generative Fill
                 </Button>
+                <Input 
+                value={pendingPrompt} 
+                onChange={(e) =>setPendingPrompt(e.currentTarget.value)} 
+                placeholder="Enter Prompt..."
+                />
+                </div>
                 <Button onClick={() => setTransformation("blur")}>
                     Apply Blur
                 </Button>
@@ -37,7 +51,7 @@ export default function EditPage({ searchParams: { publicId } }: {
                     Remove Background
                 </Button>
             </div>
-            <div className="grid grid-cols-2 gap-12">
+            <div className="grid grid-cols-2 gap-8">
                 <CldImage
                     src={publicId}
                     width={300}
@@ -48,11 +62,13 @@ export default function EditPage({ searchParams: { publicId } }: {
                 {transformation === "generative-fill" &&
                     <CldImage
                         src={publicId}
-                        width={300}
-                        height={200}
+                        width="1800"
+                        height="1200"
                         alt="some image"
                         crop="pad"
-                        fillBackground
+                        fillBackground={{
+                            prompt,
+                        }}
                     />
                 }
 

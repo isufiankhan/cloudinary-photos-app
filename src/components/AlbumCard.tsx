@@ -16,7 +16,7 @@ export function AlbumCard( {folder} : {folder: Folder}) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{folder.name}</CardTitle>
+        <CardTitle className="capitalize">{folder.name}</CardTitle>
         <CardDescription>All your {folder.name} images</CardDescription>
       </CardHeader>
       <CardContent>

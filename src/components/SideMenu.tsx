@@ -1,8 +1,14 @@
 import Link from "next/link"
 import Heart from "./icons/Heart"
 import { Button } from "./ui/button"
+import cloudinary from "cloudinary";
+import { Folder } from "@/app/albums/page";
+import { FolderOpen } from "lucide-react";
 
-const SideMenu = () => {
+const SideMenu = async() => {
+    const {folders} = (await cloudinary.v2.api.root_folders()) as {
+        folders : Folder[];
+    };
     return (
         <div className="w-1/4">
             <div className="pb-12">
@@ -28,6 +34,18 @@ const SideMenu = () => {
                                 Albums
                                 </Link>
                             </Button>
+                                {folders.map((folder) => (
+                                    <Button 
+                                    variant={"ghost"} 
+                                    asChild 
+                                    key={folder.name} 
+                                    className="w-full justify-start flex gap-2 capitalize"
+                                    >
+                                    <Link href={`/albums/${folder.path}`} className="pl-10">
+                                    <FolderOpen />
+                                    {folder.name}
+                                </Link>
+                            </Button>))}
                             <Button asChild variant="ghost" className="w-full justify-start flex gap-2">
                                 <Link href={"/favorites"}>
                                 <Heart />
